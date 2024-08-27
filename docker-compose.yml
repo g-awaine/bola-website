@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql:8.4.2
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: Bola
+
+    volumes:
+      - ./data:/var/lib/mysql
+
+    ports:
+    - 3307:3306

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
     <!-- Stylesheets-->
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Kanit:300,400,500,500i,600,900%7CRoboto:400,900">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
@@ -38,13 +38,26 @@
               <div class="rd-navbar-main-top" style="background-color: white;">
                 <div class="rd-navbar-main-container container">
                   <!-- RD Navbar Brand-->
-                  <div class="rd-navbar-brand"><a class="brand" href="./"><img class="brand-logo " src="images/logo-soccer-default-95x126.png" alt="" width="95" height="126"/></a>
+                  <div class="rd-navbar-brand"><a class="brand" href="./">
+                    <img class="brand-logo " src="{{ url_for('static', filename='images/logo-soccer-default-95x126.png') }}" alt="" width="95" height="126"/></a>
                   </div>
                   <!-- RD Navbar List-->
                   <ul class="rd-navbar-list">
-                    <li class="rd-navbar-list-item"><a class="rd-navbar-list-link" href="#"><img src="images/partners-1-inverse-75x42.png" alt="" width="75" height="42"/></a></li>
-                    <li class="rd-navbar-list-item"><a class="rd-navbar-list-link" href="#"><img src="images/partners-2-inverse-88x45.png" alt="" width="88" height="45"/></a></li>
-                    <li class="rd-navbar-list-item"><a class="rd-navbar-list-link" href="#"><img src="images/partners-3-inverse-79x52.png" alt="" width="79" height="52"/></a></li>
+                    <li class="rd-navbar-list-item">
+                      <a class="rd-navbar-list-link" href="#">
+                        <img src="{{ url_for('static', filename='images/partners-1-inverse-75x42.png') }}" alt="" width="75" height="42"/>
+                      </a>
+                    </li>
+                    <li class="rd-navbar-list-item">
+                      <a class="rd-navbar-list-link" href="#">
+                        <img src="{{ url_for('static', filename='images/partners-2-inverse-88x45.png') }}" alt="" width="88" height="45"/>
+                      </a>
+                    </li>
+                    <li class="rd-navbar-list-item">
+                      <a class="rd-navbar-list-link" href="#">
+                        <img src="{{ url_for('static', filename='images/partners-3-inverse-79x52.png') }}" alt="" width="79" height="52"/>
+                      </a>
+                    </li>
                   </ul>
                   <!-- RD Navbar Search-->
                   <div class="rd-navbar-search">
@@ -94,7 +107,7 @@
       <!-- Swiper-->
       <section class="section swiper-container swiper-slider swiper-classic bg-gray-2" data-loop="true" data-autoplay="4000" data-simulate-touch="false" data-slide-effect="fade">
         <div class="swiper-wrapper">
-          <div class="swiper-slide text-center" data-slide-bg="images/banner1.png">
+          <div class="swiper-slide text-center" data-slide-bg="{{ url_for('static', filename='images/banner1.png') }}">
             <div class="container">
               <div class="row justify-content-center">
                 <div class="col-xl-6">
@@ -106,7 +119,7 @@
               </div>
             </div>
           </div>
-          <div class="swiper-slide" data-slide-bg="images/bg_1.jpg">
+          <div class="swiper-slide" data-slide-bg="{{ url_for('static', filename='images/bg_1.jpg') }}">
             <div class="container">
               <div class="row justify-content-end">
                 <div class="col-xl-5">
@@ -118,7 +131,7 @@
               </div>
             </div>
           </div>
-          <div class="swiper-slide" data-slide-bg="images/slider-1-slide-2-1920x671.jpg">
+          <div class="swiper-slide" data-slide-bg="{{ url_for('static', filename='images/slider-1-slide-2-1920x671.jpg') }}">
             <div class="container">
               <div class="row">
                 <div class="col-xl-5">
@@ -152,7 +165,11 @@
                 <div class="row row-30">
                   <div class="col-md-6">
                     <!-- Post Future-->
-                    <article class="post-future"><a class="post-future-figure" href="#"><img src="images/news-2-1-368x287.jpg" alt="" width="368" height="287"/></a>
+                    <article class="post-future">
+                      <a class="post-future-figure" href="#">
+                        <img src="{{ url_for('static', filename='images/news-2-1-368x287.jpg') }}" alt="" width="368" height="287"/>
+                      </a>
+                      
                       <div class="post-future-main">
                         <h4 class="post-future-title"><a href="#">Sadio mane still makes a difference, sam wilson admits</a></h4>
                         <div class="post-future-meta">
@@ -188,7 +205,11 @@
                   </div>
                   <div class="col-md-6">
                     <!-- Post Future-->
-                    <article class="post-future"><a class="post-future-figure" href="#"><img src="images/news-2-2-368x287.jpg" alt="" width="368" height="287"/></a>
+                    <article class="post-future">
+                      <a class="post-future-figure" href="#">
+                        <img src="{{ url_for('static', filename='images/news-2-2-368x287.jpg') }}" alt="" width="368" height="287"/>
+                      </a>
+
                       <div class="post-future-main">
                         <h4 class="post-future-title"><a href="#">Robertson's decent debut at european cup 2020</a></h4>
                         <div class="post-future-meta">
@@ -230,7 +251,8 @@
                         <div class="swiper-slide">
                           <div class="swiper-slide-caption">
                                                 <!-- Post Alice-->
-                                                <article class="post-alice"><img src="images/post-slide-1-769x397.jpg" alt="" width="769" height="397"/>
+                                                <article class="post-alice">
+                                                  <img src="{{ url_for('static', filename='images/post-slide-1-769x397.jpg') }}" alt="" width="769" height="397"/>
                                                   <div class="post-alice-main">
                                                     <!-- Badge-->
                                                     <div class="badge badge-secondary">the team
@@ -248,7 +270,8 @@ Sevens head coach</a></h3>
                         <div class="swiper-slide">
                           <div class="swiper-slide-caption">
                                                 <!-- Post Alice-->
-                                                <article class="post-alice"><img src="images/post-slide-2-769x397.jpg" alt="" width="769" height="397"/>
+                                                <article class="post-alice">
+                                                  <img src="{{ url_for('static', filename='images/post-slide-2-769x397.jpg') }}" alt="" width="769" height="397"/>
                                                   <div class="post-alice-main">
                                                     <!-- Badge-->
                                                     <div class="badge badge-primary">The League
@@ -265,7 +288,8 @@ Sevens head coach</a></h3>
                         <div class="swiper-slide">
                           <div class="swiper-slide-caption">
                                                 <!-- Post Alice-->
-                                                <article class="post-alice"><img src="images/post-slide-3-769x397.jpg" alt="" width="769" height="397"/>
+                                                <article class="post-alice">
+                                                  <img src="{{ url_for('static', filename='images/post-slide-3-769x397.jpg') }}" alt="" width="769" height="397"/>
                                                   <div class="post-alice-main">
                                                     <!-- Post Video Button--><a class="post-video-button" href="#modal1" data-toggle="modal"><span class="icon material-icons-play_arrow"></span></a>
                                                     <h3 class="post-alice-title"><a href="#">2020 Europa League Final</a></h3>
@@ -287,7 +311,10 @@ Sevens head coach</a></h3>
                   </div>
                   <div class="col-md-12">
                     <!-- Post Future-->
-                    <article class="post-future post-future-horizontal"><a class="post-future-figure" href="#"><img src="images/news-3-3-370x325.jpg" alt="" width="370" height="325"/></a>
+                    <article class="post-future post-future-horizontal">
+                      <a class="post-future-figure" href="#">
+                        <img src="{{ url_for('static', filename='images/news-3-3-370x325.jpg') }}" alt="" width="370" height="325"/>
+                      </a>
                       <div class="post-future-main">
                         <h4 class="post-future-title"><a href="#">Zidane: “We’re not going to change the way we play at the Calderón”</a></h4>
                         <div class="post-future-meta">
@@ -324,7 +351,8 @@ Sevens head coach</a></h3>
                     <h3 class="game-info-title">Champions league semi-final 2020</h3>
                     <div class="game-info-main">
                       <div class="game-info-team game-info-team-first">
-                        <figure><img src="images/team-sportland-75x99.png" alt="" width="75" height="99"/>
+                        <figure>
+                          <img src="{{ url_for('static', filename='images/team-sportland-75x99.png') }}" alt="" width="75" height="99"/>
                         </figure>
                         <div class="game-result-team-name">Sportland</div>
                         <div class="game-result-team-country">Italy</div>
@@ -345,7 +373,7 @@ Sevens head coach</a></h3>
                         </div>
                       </div>
                       <div class="game-info-team game-info-team-second">
-                        <figure><img src="images/team-dream-team-91x91.png" alt="" width="91" height="91"/>
+                        <figure><img src="{{ url_for('static', filename='images/team-dream-team-91x91.png') }}" alt="" width="91" height="91"/>
                         </figure>
                         <div class="game-result-team-name">Dream Team</div>
                         <div class="game-result-team-country">Spain</div>
@@ -382,7 +410,8 @@ Sevens head coach</a></h3>
                       <article class="game-result game-result-creative">
                         <div class="game-result-main-vertical">
                           <div class="game-result-team game-result-team-horizontal game-result-team-first">
-                            <figure class="game-result-team-figure"><img src="images/team-sportland-31x41.png" alt="" width="31" height="41"/>
+                            <figure class="game-result-team-figure">
+                              <img src="{{ url_for('static', filename='images/team-sportland-31x41.png') }}" alt="" width="31" height="41"/>
                             </figure>
                             <div class="game-result-team-title">
                               <div class="game-result-team-name">Sportland</div>
@@ -392,7 +421,7 @@ Sevens head coach</a></h3>
                             </div>
                           </div><span class="game-result-team-divider">VS</span>
                           <div class="game-result-team game-result-team-horizontal game-result-team-second">
-                            <figure class="game-result-team-figure"><img src="images/team-fenix-40x32.png" alt="" width="40" height="32"/>
+                            <figure class="game-result-team-figure"><img src="{{ url_for('static', filename='images/team-fenix-40x32.png') }}" alt="" width="40" height="32"/>
                             </figure>
                             <div class="game-result-team-title">
                               <div class="game-result-team-name">Real madrid</div>
@@ -416,7 +445,7 @@ Sevens head coach</a></h3>
                       <article class="game-result game-result-creative">
                         <div class="game-result-main-vertical">
                           <div class="game-result-team game-result-team-horizontal game-result-team-first">
-                            <figure class="game-result-team-figure"><img src="images/team-bavaria-fc-26x34.png" alt="" width="26" height="34"/>
+                            <figure class="game-result-team-figure"><img src="{{ url_for('static', filename='images/team-bavaria-fc-26x34.png') }}" alt="" width="26" height="34"/>
                             </figure>
                             <div class="game-result-team-title">
                               <div class="game-result-team-name">Bavaria FC</div>
@@ -426,7 +455,7 @@ Sevens head coach</a></h3>
                             </div>
                           </div><span class="game-result-team-divider">VS</span>
                           <div class="game-result-team game-result-team-horizontal game-result-team-second">
-                            <figure class="game-result-team-figure"><img src="images/team-athletic-33x30.png" alt="" width="33" height="30"/>
+                            <figure class="game-result-team-figure"><img src="{{ url_for('static', filename='images/team-athletic-33x30.png') }}" alt="" width="33" height="30"/>
                             </figure>
                             <div class="game-result-team-title">
                               <div class="game-result-team-name">Atletico</div>
@@ -453,8 +482,8 @@ Sevens head coach</a></h3>
                   <!-- Heading Component-->
                   <article class="heading-component">
                     <div class="heading-component-inner">
-                      <h5 class="heading-component-title">Standings
-                      </h5><a class="button button-xs button-gray-outline" href="#">Full Standings</a>
+                      <h5 class="heading-component-title">Standings</h5>
+                      <a class="button button-xs button-gray-outline" href="#">Full Standings</a>
                     </div>
                   </article>
                   <!-- Table team-->
@@ -472,7 +501,7 @@ Sevens head coach</a></h3>
                         <tr>
                           <td><span>1</span></td>
                           <td class="team-inline">
-                            <div class="team-figure"><img src="images/team-sportland-31x41.png" alt="" width="31" height="41"/>
+                            <div class="team-figure"><img src="{{ url_for('static', filename='images/team-sportland-31x41.png') }}" alt="" width="31" height="41"/>
                             </div>
                             <div class="team-title">
                               <div class="team-name">Sportland</div>
@@ -486,7 +515,7 @@ Sevens head coach</a></h3>
                         <tr>
                           <td><span>2</span></td>
                           <td class="team-inline">
-                            <div class="team-figure"><img src="images/team-dream-team-34x34.png" alt="" width="34" height="34"/>
+                            <div class="team-figure"><img src="{{ url_for('static', filename='images/team-dream-team-34x34.png') }}" alt="" width="34" height="34"/>
                             </div>
                             <div class="team-title">
                               <div class="team-name">Dream team</div>
@@ -500,7 +529,7 @@ Sevens head coach</a></h3>
                         <tr>
                           <td><span>3</span></td>
                           <td class="team-inline">
-                            <div class="team-figure"><img src="images/team-real-madrid-28x37.png" alt="" width="28" height="37"/>
+                            <div class="team-figure"><img src="{{ url_for('static', filename='images/team-real-madrid-28x37.png') }}" alt="" width="28" height="37"/>
                             </div>
                             <div class="team-title">
                               <div class="team-name">Real Madrid</div>
@@ -514,7 +543,7 @@ Sevens head coach</a></h3>
                         <tr>
                           <td><span>4</span></td>
                           <td class="team-inline">
-                            <div class="team-figure"><img src="images/team-celta-vigo-35x39.png" alt="" width="35" height="39"/>
+                            <div class="team-figure"><img src="{{ url_for('static', filename='images/team-celta-vigo-35x39.png') }}" alt="" width="35" height="39"/>
                             </div>
                             <div class="team-title">
                               <div class="team-name">Celta Vigo</div>
@@ -528,7 +557,7 @@ Sevens head coach</a></h3>
                         <tr>
                           <td><span>5</span></td>
                           <td class="team-inline">
-                            <div class="team-figure"><img src="images/team-barcelona-30x35.png" alt="" width="30" height="35"/>
+                            <div class="team-figure"><img src="{{ url_for('static', filename='images/team-barcelona-30x35.png') }}" alt="" width="30" height="35"/>
                             </div>
                             <div class="team-title">
                               <div class="team-name">Barcelona</div>
@@ -542,7 +571,7 @@ Sevens head coach</a></h3>
                         <tr>
                           <td><span>6</span></td>
                           <td class="team-inline">
-                            <div class="team-figure"><img src="images/team-bavaria-fc-26x34.png" alt="" width="26" height="34"/>
+                            <div class="team-figure"><img src="{{ url_for('static', filename='images/team-bavaria-fc-26x34.png') }}" alt="" width="26" height="34"/>
                             </div>
                             <div class="team-title">
                               <div class="team-name">Bavaria FC</div>
@@ -587,22 +616,35 @@ Sevens head coach</a></h3>
                   </article>
                   <article class="gallery" data-lightgallery="group">
                     <div class="row row-10 row-narrow">
-                      <div class="col-6 col-sm-4 col-md-6 col-lg-4"><a class="thumbnail-creative" data-lightgallery="item" href="images/gallery-soccer-1-original.jpg"><img src="images/gallery-soccer-1-212x212.jpg" alt=""/>
+                      <div class="col-6 col-sm-4 col-md-6 col-lg-4">
+                        <a class="thumbnail-creative" data-lightgallery="item" href="{{ url_for('static', filename='images/gallery-soccer-1-original.jpg') }}">
+                          <img src="{{ url_for('static', filename='images/gallery-soccer-1-212x212.jpg') }}" alt=""/>
+                          <div class="thumbnail-creative-overlay"></div>
+                        </a>
+                      </div>
+                      <div class="col-6 col-sm-4 col-md-6 col-lg-4">
+                        <a class="thumbnail-creative" data-lightgallery="item" href="{{ url_for('static', filename='images/gallery-soccer-2-original.jpg') }}">
+                          <img src="{{ url_for('static', filename='images/gallery-soccer-2-212x212.jpg') }}" alt=""/>
                           <div class="thumbnail-creative-overlay"></div></a>
                       </div>
-                      <div class="col-6 col-sm-4 col-md-6 col-lg-4"><a class="thumbnail-creative" data-lightgallery="item" href="images/gallery-soccer-2-original.jpg"><img src="images/gallery-soccer-2-212x212.jpg" alt=""/>
+                      <div class="col-6 col-sm-4 col-md-6 col-lg-4">
+                        <a class="thumbnail-creative" data-lightgallery="item" href="{{ url_for('static', filename='images/gallery-soccer-3-original.jpg') }}">
+                          <img src="{{ url_for('static', filename='images/gallery-soccer-3-212x212.jpg') }}" alt=""/>
                           <div class="thumbnail-creative-overlay"></div></a>
                       </div>
-                      <div class="col-6 col-sm-4 col-md-6 col-lg-4"><a class="thumbnail-creative" data-lightgallery="item" href="images/gallery-soccer-3-original.jpg"><img src="images/gallery-soccer-3-212x212.jpg" alt=""/>
+                      <div class="col-6 col-sm-4 col-md-6 col-lg-4">
+                        <a class="thumbnail-creative" data-lightgallery="item" href="{{ url_for('static', filename='images/gallery-soccer-4-original.jpg') }}">
+                          <img src="{{ url_for('static', filename='images/gallery-soccer-4-212x212.jpg') }}" alt=""/>
                           <div class="thumbnail-creative-overlay"></div></a>
                       </div>
-                      <div class="col-6 col-sm-4 col-md-6 col-lg-4"><a class="thumbnail-creative" data-lightgallery="item" href="images/gallery-soccer-4-original.jpg"><img src="images/gallery-soccer-4-212x212.jpg" alt=""/>
+                      <div class="col-6 col-sm-4 col-md-6 col-lg-4">
+                        <a class="thumbnail-creative" data-lightgallery="item" href="{{ url_for('static', filename='images/gallery-soccer-5-original.jpg') }}">
+                          <img src="{{ url_for('static', filename='images/gallery-soccer-5-212x212.jpg') }}" alt=""/>
                           <div class="thumbnail-creative-overlay"></div></a>
                       </div>
-                      <div class="col-6 col-sm-4 col-md-6 col-lg-4"><a class="thumbnail-creative" data-lightgallery="item" href="images/gallery-soccer-5-original.jpg"><img src="images/gallery-soccer-5-212x212.jpg" alt=""/>
-                          <div class="thumbnail-creative-overlay"></div></a>
-                      </div>
-                      <div class="col-6 col-sm-4 col-md-6 col-lg-4"><a class="thumbnail-creative" data-lightgallery="item" href="images/gallery-soccer-6-original.jpg"><img src="images/gallery-soccer-6-212x212.jpg" alt=""/>
+                      <div class="col-6 col-sm-4 col-md-6 col-lg-4">
+                        <a class="thumbnail-creative" data-lightgallery="item" href="{{ url_for('static', filename='images/gallery-soccer-6-original.jpg') }}">
+                          <img src="{{ url_for('static', filename='images/gallery-soccer-6-212x212.jpg') }}" alt=""/>
                           <div class="thumbnail-creative-overlay"></div></a>
                       </div>
                     </div>
@@ -620,7 +662,7 @@ Sevens head coach</a></h3>
                     <div class="group-md">
                       <!-- Player Voting Item-->
                       <div class="player-voting-item">
-                        <div class="player-voting-item-figure"><img src="images/player-5-152x144.jpg" alt="" width="152" height="144"/>
+                        <div class="player-voting-item-figure"><img src="{{ url_for('static', filename='images/player-5-152x144.jpg') }}" alt="" width="152" height="144"/>
                           <div class="player-number">
                             <p>21</p>
                           </div>
@@ -652,7 +694,8 @@ Sevens head coach</a></h3>
                       </div>
                       <!-- Player Voting Item-->
                       <div class="player-voting-item">
-                        <div class="player-voting-item-figure"><img src="images/player-6-152x144.jpg" alt="" width="152" height="144"/>
+                        <div class="player-voting-item-figure">
+                          <img src="{{ url_for('static', filename='images/player-6-152x144.jpg') }}" alt="" width="152" height="144"/>
                           <div class="player-number">
                             <p>7</p>
                           </div>
@@ -732,7 +775,7 @@ Sevens head coach</a></h3>
     <!-- Global Mailform Output-->
 
     <!-- Javascript-->
-    <script src="js/core.min.js"></script>
-    <script src="js/script.js"></script>
+    <script src="{{ url_for('static', filename='js/core.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   </body>
 </html>
