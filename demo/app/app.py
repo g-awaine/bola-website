@@ -33,11 +33,40 @@ class Teams(db.Model):
     losses = db.Column(db.Integer)
     points = db.Column(db.Integer)
 
+class Teams_Icons(db.Model):
+    __tablename__ = 'Teams_Icons'
+    team_id = db.Column(db.Integer, primary_key=True)
+    icon_name = db.Column(db.String, nullable=False)
+    url = db.Column(db.String, nullable=False)
+    upload_date = db.Column(db.Date, nullable=False)
+
 
 @app.route('/')
 def index():
-    teams = db.session.execute(db.select(Teams)).scalars()
-    return render_template('index.html', teams=teams)
+    leaderboard_results = db.session.execute(
+        db.select(Teams, Teams_Icons.url)
+        .select_from(Teams)
+        .join(Teams_Icons, Teams.team_id == Teams_Icons.team_id)
+    ).all()
+
+    leaderboard_standings = [
+        {
+            'team_name': row[0].team_name,
+            'country': row[0].country,
+            'wins': row[0].wins,
+            'losses': row[0].losses,
+            'points': row[0].points,
+            'url': row[1]
+        }
+        for row in leaderboard_results
+    ]
+    print(leaderboard_standings)
+
+    return render_template('index.html', leaderboard_standings=leaderboard_standings)
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
