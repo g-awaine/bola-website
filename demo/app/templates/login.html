@@ -6,28 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ url_for('static', filename='images/logo-soccer-default-95x126.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css4_login/styles.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-    <div class="login-heading">
-        <a href="{{ url_for('index') }}"><img class="brand-logo" src="{{ url_for('static', filename='images/logo-team-1-237x312.png') }}" alt=""/></a>
-        <h1>Login to Bola</h1>
-    </div>
-    <div class="container">
-        <form action="#" method="post">
-            <div class="form-group">
+    <div class="login-container"> 
+        <section id="login-heading">
+            <a href="{{ url_for('index') }}"><img class="brand-logo" src="{{ url_for('static', filename='images/logo-team-1-237x312.png') }}" alt=""/></a>
+            <h1>Login to Bola</h1>
+        </section>
+
+        <form id="login-form" action="#" method="post">
+            <div class="form-entry">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" required, >
+                <input type="text" id="username" name="username" required>
             </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+            <div class="form-entry">
+                <div id="password-and-forgot-password">
+                    <label for="password">Password</label>
+                    <a href="#">Forgot password?</a>
+                </div>
+                <div id="password-field">
+                    <input type="password" id="password" name="password" required>
+                    <i class='bx bx-hide eye-icon' id="toggle-password"></i>
+                </div>
             </div>
-            <button type="submit">Login</button>
+            <button id="login_button" type="submit">Login</button>
         </form>
     </div>
 
-    <div class="container">
-        Don't have an account?&nbsp;<a>Create an account</a>
+    <div class="login-container">
+        Don't have an account? <a href="#">Signup</a>
     </div>
 </body>
 </html>
