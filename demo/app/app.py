@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import base64
 import secrets
 import hashlib
-from flask import Flask, session, render_template, redirect, request, url_for
+from flask import Flask, session, render_template, redirect, request, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_mysqldb import MySQL
 from flask_wtf import FlaskForm, CSRFProtect
@@ -54,7 +54,7 @@ class Users(db.Model):
     __tablename__ = 'Users'
     username = db.Column(db.String(50), primary_key=True)
     email = db.Column(db.Text, nullable=False)
-    hashed_password = db.Column(db.Text, nullable=False)
+    password = db.Column(db.Text, nullable=False)
 
 # create the tables
 with app.app_context():
@@ -147,8 +147,26 @@ def login():
 def registration():
     registration_form = RegistrationForm()
     if registration_form.validate_on_submit() and request.method == 'POST':
-        
-        return redirect(url_for('login'))
+        username = registration_form.username.data
+        email = registration_form.email.data
+        raw_password = registration_form.password.data
+        hashed_password = create_secure_password(raw_password, pepper)
+        new_user = Users(username=username, email=email, password=hashed_password)
+
+        try:
+            # Add the new user to the session and commit it to the database
+            db.session.add(new_user)
+            db.session.commit()
+            
+            # Redirect to the login page
+            flash('Registration successful! Please log in.', 'success')
+            return redirect(url_for('login'))
+
+        except Exception as e:
+            # Handle exceptions (e.g., duplicate entry or database error)
+            db.session.rollback()
+            flash(f'Error: {str(e)}', 'danger')
+            return render_template('registration.html', form=registration_form)
     
     return render_template('registration.html', form=registration_form)
 
