@@ -3,3 +3,4 @@ flask-mysqldb
 flask_sqlalchemy 
 pymysql
 cryptography
+email_validator
