@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import base64
 import secrets
 import hashlib
 from flask import Flask, session, render_template, redirect, request, url_for
@@ -7,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mysqldb import MySQL
 from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from markupsafe import escape
 
 # Load environment variables from .env file
@@ -36,8 +37,8 @@ db.init_app(app)
 class Teams(db.Model):
     __tablename__ = 'Teams'
     team_id = db.Column(db.Integer, primary_key=True)
-    team_name = db.Column(db.String)
-    country = db.Column(db.String)
+    team_name = db.Column(db.String(100))
+    country = db.Column(db.String(50))
     wins = db.Column(db.Integer)
     losses = db.Column(db.Integer)
     points = db.Column(db.Integer)
@@ -45,17 +46,43 @@ class Teams(db.Model):
 class Teams_Icons(db.Model):
     __tablename__ = 'Teams_Icons'
     team_id = db.Column(db.Integer, primary_key=True)
-    icon_name = db.Column(db.String, nullable=False)
-    url = db.Column(db.String, nullable=False)
+    icon_name = db.Column(db.String(100), nullable=False)
+    url = db.Column(db.Text, nullable=False)
     upload_date = db.Column(db.Date, nullable=False)
+
+class Users(db.Model):
+    __tablename__ = 'Users'
+    username = db.Column(db.String(50), primary_key=True)
+    email = db.Column(db.Text, nullable=False)
+    hashed_password = db.Column(db.Text, nullable=False)
+
+# create the tables
+with app.app_context():
+    db.create_all()
+
+# define custom form validators
+def username_exists(form, field):
+    if Users.query.filter_by(username=field.data).first():
+        raise ValidationError('Username already taken. Please choose a different one.')
+
+def username_length_check(form, field):
+    if len(field.data) > 50:
+        raise ValidationError('Username must be less than 50 characters')
+    elif len(field.data) < 3:
+        raise ValidationError('Username must be more than 3 characters')
+
+def email_exists(form, field):
+    if Users.query.filter_by(email=field.data).first():
+        raise ValidationError('This email is already associated with an account. Please choose a different one.')
+
 
 # define the forms used in the website
 class RegistrationForm(FlaskForm):
     username = StringField('Username', 
-                           validators=[DataRequired()],
+                           validators=[DataRequired(), username_exists, username_length_check],
                            render_kw={"placeholder": "Username"})
     email = StringField('Email', 
-                        validators=[DataRequired(), Email(message='Invalid email address')],
+                        validators=[DataRequired(), Email(message='Invalid email address'), email_exists],
                         render_kw={"placeholder": "Email"})
     password = PasswordField('Password', 
                             validators=[DataRequired()],
@@ -66,18 +93,26 @@ class RegistrationForm(FlaskForm):
                                                  render_kw={"placeholder": "Password"})
     submit = SubmitField('Register')
 
+
 # define the functions used
-def create_secure_password(password):
-  salt = secrets.token_urlsafe(16)
-  iterations = 100_000 
-  hash_value = hashlib.pbkdf2_hmac(
-    'sha256',  
-    password.encode('utf-8') + pepper.encode('utf-8'), 
-    salt, 
-    iterations
-  )
-  password_hash = salt + hash_value
-  return password_hash
+def create_secure_password(password, pepper):
+    salt = secrets.token_bytes(16)
+    iterations = 100_000 
+    hash_value = hashlib.pbkdf2_hmac(
+        'sha256',  
+        password.encode('utf-8') + pepper.encode('utf-8'), 
+        salt, 
+        iterations
+    )
+
+    # represent the salt and hash as base64 for storage
+    salt_b64 = base64.b64encode(salt).decode('utf-8')
+    hash_b64 = base64.b64encode(hash_value).decode('utf-8')
+
+    # format the password hash to be delimited by a ":"
+    password_hash = f"{salt_b64}:{hash_b64}"
+    
+    return password_hash
 
 
 @app.route('/')
@@ -112,6 +147,7 @@ def login():
 def registration():
     registration_form = RegistrationForm()
     if registration_form.validate_on_submit() and request.method == 'POST':
+        
         return redirect(url_for('login'))
     
     return render_template('registration.html', form=registration_form)
