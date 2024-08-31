@@ -1,8 +1,8 @@
 import os
 from dotenv import load_dotenv
-import base64
 import secrets
 import hashlib
+import hmac
 from flask import Flask, session, render_template, redirect, request, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_mysqldb import MySQL
@@ -54,30 +54,33 @@ class Users(db.Model):
     __tablename__ = 'Users'
     username = db.Column(db.String(50), primary_key=True)
     email = db.Column(db.Text, nullable=False)
-    password = db.Column(db.Text, nullable=False)
+    salt = db.Column(db.LargeBinary(16), nullable=False)
+    hashed_password = db.Column(db.LargeBinary(32), nullable=False)
 
 # create the tables
 with app.app_context():
     db.create_all()
 
-# define custom form validators
-def username_exists(form, field):
-    if Users.query.filter_by(username=field.data).first():
-        raise ValidationError('Username already taken. Please choose a different one.')
-
-def username_length_check(form, field):
-    if len(field.data) > 50:
-        raise ValidationError('Username must be less than 50 characters')
-    elif len(field.data) < 3:
-        raise ValidationError('Username must be more than 3 characters')
-
-def email_exists(form, field):
-    if Users.query.filter_by(email=field.data).first():
-        raise ValidationError('This email is already associated with an account. Please choose a different one.')
-
 
 # define the forms used in the website
+
+# defines the registration form used to register an account
 class RegistrationForm(FlaskForm):
+    # define custom form validators
+    def username_exists(form, field):
+        if Users.query.filter_by(username=field.data).first():
+            raise ValidationError('Username already taken. Please choose a different one.')
+
+    def username_length_check(form, field):
+        if len(field.data) > 50:
+            raise ValidationError('Username must be less than 50 characters')
+        elif len(field.data) < 3:
+            raise ValidationError('Username must be more than 3 characters')
+
+    def email_exists(form, field):
+        if Users.query.filter_by(email=field.data).first():
+            raise ValidationError('This email is already associated with an account. Please choose a different one.')
+    
     username = StringField('Username', 
                            validators=[DataRequired(), username_exists, username_length_check],
                            render_kw={"placeholder": "Username"})
@@ -93,26 +96,36 @@ class RegistrationForm(FlaskForm):
                                                  render_kw={"placeholder": "Password"})
     submit = SubmitField('Register')
 
+# defines a login form that logs the user into an account
+class LoginForm(FlaskForm):
+    # define custom form validators
+    def username_does_not_exist(form, field):
+        if Users.query.filter_by(username=field.data).first():
+            raise ValidationError('Username does not exist')
+        
+    def username_does_not_exist(form, field):
+        if Users.query.filter_by(username=field.data).first():
+            raise ValidationError('Username does not exist')
+        
+    username = StringField('Username', 
+                           validators=[DataRequired(), username_does_not_exist],
+                           render_kw={"placeholder": "Username"})
+    password = PasswordField('Password', 
+                            validators=[DataRequired()],
+                            render_kw={"placeholder": "Password"})
+    submit = SubmitField('Login')
 
 # define the functions used
 def create_secure_password(password, pepper):
-    salt = secrets.token_bytes(16)
-    iterations = 100_000 
-    hash_value = hashlib.pbkdf2_hmac(
+    salt = os.urandom(16)
+    password_hash = hashlib.pbkdf2_hmac(
         'sha256',  
         password.encode('utf-8') + pepper.encode('utf-8'), 
         salt, 
-        iterations
+        100_000
     )
-
-    # represent the salt and hash as base64 for storage
-    salt_b64 = base64.b64encode(salt).decode('utf-8')
-    hash_b64 = base64.b64encode(hash_value).decode('utf-8')
-
-    # format the password hash to be delimited by a ":"
-    password_hash = f"{salt_b64}:{hash_b64}"
     
-    return password_hash
+    return salt, password_hash
 
 
 @app.route('/')
@@ -149,9 +162,9 @@ def registration():
     if registration_form.validate_on_submit() and request.method == 'POST':
         username = registration_form.username.data
         email = registration_form.email.data
-        raw_password = registration_form.password.data
-        hashed_password = create_secure_password(raw_password, pepper)
-        new_user = Users(username=username, email=email, password=hashed_password)
+        plain_password = registration_form.password.data
+        salt, hashed_password = create_secure_password(plain_password, pepper)
+        new_user = Users(username=username, email=email, salt=salt, hashed_password=hashed_password)
 
         try:
             # Add the new user to the session and commit it to the database
@@ -165,7 +178,7 @@ def registration():
         except Exception as e:
             # Handle exceptions (e.g., duplicate entry or database error)
             db.session.rollback()
-            flash(f'Error: {str(e)}', 'danger')
+            print(f'Error: {str(e)}', 'danger')
             return render_template('registration.html', form=registration_form)
     
     return render_template('registration.html', form=registration_form)
