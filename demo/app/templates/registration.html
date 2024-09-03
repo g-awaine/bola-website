@@ -10,7 +10,7 @@
 <body>
     <div class="registration-container">
         <h2>Register</h2>
-        <form action="/registration" method="post">
+        <form action="{{ url_for('registration') }}" method="post">
             {{ form.csrf_token }}
             <div class="form-field">
                 {{ form.username.label }}

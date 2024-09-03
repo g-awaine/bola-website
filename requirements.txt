@@ -1,6 +1,7 @@
 flask
 flask-mysqldb
-flask_sqlalchemy 
+flask_sqlalchemy
+flask-mail
 pymysql
 cryptography
 email_validator
