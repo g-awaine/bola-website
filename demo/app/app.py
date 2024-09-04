@@ -11,6 +11,7 @@ from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
 from flask_mysqldb import MySQL
 from flask_wtf import FlaskForm, CSRFProtect
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
@@ -51,6 +52,21 @@ s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 db = SQLAlchemy()
 db.init_app(app)
 
+# initialise the app with flask-login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'  # redirect to the login page if login is required
+
+# define the user class for the session
+class User(UserMixin):
+    def __init__(self, username):
+        self.username = username
+
+# define the user loader callback
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
+
 # define the table model as an object
 class Teams(db.Model):
     __tablename__ = 'Teams'
@@ -70,7 +86,8 @@ class Teams_Icons(db.Model):
 
 class Users(db.Model):
     __tablename__ = 'Users'
-    username = db.Column(db.String(50), primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
     email = db.Column(db.Text, nullable=False)
     salt = db.Column(db.LargeBinary(16), nullable=False)
     hashed_password = db.Column(db.LargeBinary(32), nullable=False)
@@ -239,6 +256,8 @@ def index():
 def login():
     login_form = LoginForm()
     if login_form.validate_on_submit() and request.method == 'POST':
+        username = login_form.username.data
+        user = db.session.execute(db.select(Users).filter_by(username=username)).scalar_one()
         return redirect(url_for('index'))
 
     return render_template('login.html', form=login_form)
