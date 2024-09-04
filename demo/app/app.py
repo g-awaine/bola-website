@@ -303,8 +303,8 @@ def reset_password(token):
     try:
         email = s.loads(token, salt='password-reset-salt', max_age=3600)  # Token valid for 1 hour
     except Exception as e:
-        flash('The password reset link is invalid or has expired.', 'danger')
-        return redirect(url_for('request_reset'))
+        print('The password reset link is invalid or has expired.', 'danger')
+        return redirect(url_for('request_reset_password'))
     reset_password_form = ResetPasswordForm()
 
     if reset_password_form.validate_on_submit():
@@ -315,10 +315,10 @@ def reset_password(token):
         user.salt = salt
         user.hashed_password = new_hashed_password
         db.session.commit()
-        flash('The password reset link is invalid or has expired.', 'danger')
+        
         return redirect(url_for('login'))
 
-    return render_template('reset_password.html', form=reset_password_form)
+    return render_template('reset_password.html', form=reset_password_form, token=token)
 
 
 if __name__ == '__main__':
