@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login - Bola</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo-soccer-default-95x126.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css4_login/styles.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="login-container"> 
+        <section id="login-heading">
+            <a href="{{ url_for('index') }}"><img class="brand-logo" src="{{ url_for('static', filename='images/logo-team-1-237x312.png') }}" alt=""/></a>
+            <h1>Login to Bola</h1>
+        </section>
+
+        <form id="login-form" action="{{ url_for('login') }}" method="post">
+            {{ form.csrf_token }}
+            <div class="form-entry">
+                {{ form.username.label }}
+                {{ form.username }}
+                {% if form.username.errors %}
+                <div class="form-field-error">
+                    {% for error in form.username.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-entry">
+                <div id="password-and-forgot-password">
+                    {{ form.password.label }}
+                    <a href="{{ url_for('request_reset_password') }}">Forgot password?</a>
+                </div>
+                <div id="password-field">
+                    {{ form.password }}
+                    <i class='bx bx-hide eye-icon' id="toggle-password"></i>
+                </div>
+                {% if form.password.errors %}
+                <div class="form-field-error">
+                    {% for error in form.password.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <button id="login_button" type="submit">{{ form.submit.label }}</button>
+        </form>
+    </div>
+
+    <div class="login-container">
+        Don't have an account? <a href="{{ url_for('registration') }}">Signup</a>
+    </div>
+</body>
+</html>
