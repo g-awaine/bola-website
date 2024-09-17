@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<head>
+    <!-- Site Title-->
+    <title>Create Post</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo-soccer-default-95x126.png') }}">
+    <!-- Stylesheets-->
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Kanit:300,400,500,500i,600,900%7CRoboto:400,900">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css6_explore/style.css') }}"> -->
+    
+</head>
+<script type="text/javascript">
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#imageResult')
+                    .attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+            
+            $('#exampleModalCenter').modal('show');
+        }
+    }
+
+    $(function () {
+        $('#upload').on('change', function () {
+            readURL(input);
+        });
+    });
+
+    /*  show uploaded image name */
+    var input = document.getElementById( 'upload' );
+    var infoArea = document.getElementById( 'upload-label' );
+
+    input.addEventListener('change', showFileName);
+    function showFileName( event ) {
+        var input = event.srcElement;
+        var fileName = input.files[0].name;
+        infoArea.textContent = 'File name: ' + fileName;
+    }
+</script>
+
+<form id="create-post-form" method="POST" action="{{ url_for('new_post') }}" enctype="multipart/form-data">
+    {{ form.csrf_token}}
+    <div class="form-entry" >
+        {{ form.media.label }}
+        {{ form.media }}
+        {% if form.media.errors %}
+        <div class="form-field-error">
+            {% for error in form.media.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="form-entry" >
+        {{ form.content.label }}
+        {{ form.content }}
+        {% if form.content.errors %}
+        <div class="form-field-error">
+            {% for error in form.content.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <button id="create_post_button" type="submit">{{ form.submit.label }}</button>
+</form>
+

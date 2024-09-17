@@ -3,6 +3,9 @@ flask-mysqldb
 flask-sqlalchemy
 flask-mail
 flask-login
+flask-migrate
 pymysql
 cryptography
 email_validator
+pillow
+timeago

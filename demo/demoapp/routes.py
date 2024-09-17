@@ -1,11 +1,12 @@
-import uuid
-from flask import render_template, redirect, request, url_for, flash
+from flask import render_template, redirect, request, url_for, flash, jsonify, send_from_directory
 from flask_mail import Message
 from flask_login import login_user, login_required, logout_user, current_user
 
-from app import app, db, csrf, mysql, mail, s, login_manager
-from app.forms import *
-from app.models import *
+from demoapp import app, db, csrf, mysql, mail, s, login_manager
+from demoapp.forms import *
+from demoapp.models import *
+from demoapp.utils import *
+
 
 @app.route('/')
 def index():
@@ -32,8 +33,8 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('index'))
     
     login_form = LoginForm()
     if login_form.validate_on_submit() and request.method == 'POST':
@@ -47,12 +48,12 @@ def login():
 
 @app.route('/registration', methods=['GET', 'POST'])
 def registration():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('index'))
     
     registration_form = RegistrationForm()
     if registration_form.validate_on_submit() and request.method == 'POST':
-        user_id = str(uuid.uuid4())
+        user_id = generate_unique_id(Users, 'user_id')
         username = registration_form.username.data
         email = registration_form.email.data
         plain_password = registration_form.password.data
@@ -105,6 +106,7 @@ def request_reset_password():
         msg.body = f'To reset your password, click the following link: {reset_url}'
         mail.send(msg)
         flash('Check your email for the password reset link.', 'info')
+        logout_user()
         return redirect(url_for('login'))
 
     return render_template('request_reset_password.html', form=request_reset_password_form)
@@ -131,3 +133,89 @@ def reset_password(token):
         return redirect(url_for('login'))
 
     return render_template('reset_password.html', form=reset_password_form, token=token)
+
+
+@app.route("/explore", methods=['GET', 'POST'])
+def explore():
+    if request.method == 'GET':
+        if not current_user.is_authenticated:
+            return redirect(url_for('login'))
+        return render_template("explore.html")
+
+    if request.method == 'POST':
+        print('Received POST request')
+        start = int(request.json.get('start') or 1)
+        # get posts along with the author/username of the poster
+        posts = db.session.query(Posts, Users.username).outerjoin(Users, Posts.user_id == Users.user_id).paginate(page=start, per_page=3, error_out=False).items
+        result = []
+        for post, username in posts:
+            result.append(
+                {
+                    'post_url': url_for('get_post', post_id=post.post_id),
+                    'content': post.content,
+                    'media': url_for('serve_static', filename='media/mid' + post.media),
+                    'date_posted': post.date_posted,
+                    'username': username,
+                    'like_count': post.get_likes_count(),
+                    'comment_count': post.comments_count(),
+                    'comments': post.get_comments(limit=5)
+                }
+            )
+        status = True
+        return jsonify(result=result, success=status)
+
+# temporary function to show the static images from the file system
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
+
+
+@app.route("/post/new", methods=['GET', 'POST'])
+@login_required
+def new_post():
+    new_post_form = NewPostForm()
+    if new_post_form.validate_on_submit():
+        post_id = generate_unique_id(Posts, 'post_id')
+        media = save_media(new_post_form.media.data, 'media')
+        date_posted = datetime.now(timezone.utc)
+        post = Posts(post_id=post_id, content=new_post_form.content.data, media=media, author=current_user, date_posted=date_posted)
+        db.session.add(post)
+        db.session.commit()
+        flash("Posted successfully", 'success')
+        return redirect(url_for('index'))
+    return render_template("new_post.html", form=new_post_form)
+
+
+@app.route("/post/id/<string:post_id>")
+def get_post(post_id):
+    # post_id = request.args.get('post_id')
+    post = Posts.query.get_or_404(post_id)
+
+    return render_template("post.html", post=post, get_file_url=get_file_url)
+
+
+@app.route("/post/<string:post_id>/delete")
+@login_required
+def delete_post(post_id):
+    post = Posts.query.get_or_404(post_id)
+
+    if post.author == current_user:
+        db.session.query(Comments).filter(Comments.post_id == post.post_id).delete()
+        db.session.query(Notif).filter(Notif.post_id == post.post_id).delete()
+        delete_file(post.media)
+        db.session.delete(post)
+        db.session.commit()
+        flash("Post deleted", 'success')
+        return redirect(url_for('index'))
+    else:
+        flash("You don't have delete privilege for that post!", 'danger')
+        return redirect(url_for('index'))
+
+@app.route("/user/<string:username>")
+def get_user(username):
+    user = Users.query.filter_by(username=username).first_or_404()
+    posts = user.posts
+    posts.reverse()
+    return render_template("user.html", title=user.username, posts=posts, user=user, get_file_url=get_file_url)
+
+

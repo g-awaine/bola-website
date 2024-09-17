@@ -1,11 +1,12 @@
 import hashlib
 import hmac
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from flask_wtf.file import FileField, FileAllowed
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 
-from app import db, pepper
-from app.models import Users
+from demoapp import db, pepper
+from demoapp.models import *
 
 # define the forms used in the website
 
@@ -125,3 +126,19 @@ class ResetPasswordForm(FlaskForm):
                                      validators=[DataRequired(), 
                                                  EqualTo('password', message='Passwords must match')])
     submit = SubmitField('Reset Password')
+
+
+class NewPostForm(FlaskForm):
+    content = TextAreaField(label='Content')
+    media = FileField(label='Upload a Picture', validators=[
+        FileAllowed(('jpeg', 'jpg', 'png'))
+    ])
+    submit = SubmitField(label='Post')
+
+
+
+class CommentPostForm(FlaskForm):
+    content = TextAreaField(label='Comment')
+    submit = SubmitField(label='Post')
+
+

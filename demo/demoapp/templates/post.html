@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<head>
+    <!-- Site Title-->
+    <title>Post</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo-soccer-default-95x126.png') }}">
+    <!-- Stylesheets-->
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Kanit:300,400,500,500i,600,900%7CRoboto:400,900">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css6_explore/style.css') }}"> -->
+    
+</head>
+
+<div class="card article">
+    <div class="card-header">
+        <img  class="account-img rounded-circle" src="{{ url_for('static', filename='profile_pics/' + post.author.image_url) }}">
+        <a class="text-dark user-link" href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
+    </div>
+
+    {% if post.media %}
+        <div class="main-img-wrapper bg-light">
+            <img src="{{ url_for('static', filename='media/' + post.media) }}" class="card-img-top post-media rounded-0" alt="">
+        </div>
+    {% endif %}
+    <div class="card-body pb-2">
+        <div class="card-text post-meta-data">
+            {% if post.user_liked(current_user) %}
+                    <span id="l-{{ post.post_id }}" class="up-info like liked"><i class='fas fa-heart'></i></span>
+            {% else %}
+                <span id="l-{{ post.post_id }}" class="up-info like"><i class='far fa-heart'></i></span>
+            {% endif %}
+
+            <span class="up-info"><i class="far fa-comment"></i></span>
+            <span id="sh-{{ post.post_id }}" class="up-info share"><i class="fa fa-share"></i></span>
+            
+            {% if post.author == current_user %}
+                <small class="float-right"><a class="text-danger" href="{{ url_for('delete_post', post_id=post.post_id) }}">delete post</a></small>
+            {% endif %}
+            <div class="like-counter">
+                <span id="like-{{ post.post_id }}" class="like-count">{{ post.get_likes_count() }}</span>
+                likes
+            </div>
+        </div>
+        <span class="card-text"> 
+            <a class="text-dark user-link " href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
+            {{ post.content }}
+        </span>
+        <div class="comments" id="comments-on-{{ post.post_id }}">
+            {% if post.comments %}
+                {% for comment in post.comments %}
+                    <span class="comment" id="c{{ comment.cid }}">
+                        <a class="text-dark user-link" href="{{ url_for('get_user', username=comment.author.username) }}">{{ comment.author.username }}</a>
+                            {{ comment.content }}
+                            {% if comment.author == current_user %}
+                                <small class="float-right delete-comment" id="comment-{{ comment.cid }}">
+                                    <a class="text-danger" href="#">delete</a>
+                                </small>
+                            {% endif %}
+                    </span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <small class="text-muted text-uppercase">{{ post.get_timeago() }}</small>
+    </div>
+    <ul class="list-group list-group-flush">
+        {% if current_user.is_authenticated %}
+        <textarea class="text-muted comment-box make-comment border-bottom pl-2 pr-2" id="comment-on-{{ post.post_id }}" placeholder="Add a comment.."></textarea>
+        <button class="btn post-comment" id="c-{{ post.post_id }}">Post</button>
+        {% else %}
+            <div class="p-2">
+                <a href="{{ url_for('login') }}" class="text-muted">Login to comment</a>
+            </div>
+        {% endif %}
+    </ul>
+</div>

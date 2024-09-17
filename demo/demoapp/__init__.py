@@ -8,6 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mysqldb import MySQL
 from flask_wtf import CSRFProtect
 from flask_login import LoginManager
+from flask_migrate import Migrate
+
 
 # load environment variables from .env file
 load_dotenv("../../.env")
@@ -49,4 +51,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'  # redirect to the login page if login is required
 
-from app import routes
+# initialisation flask-migrate
+migrate = Migrate(app, db)
+
+
+from demoapp import routes
